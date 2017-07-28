@@ -125,15 +125,13 @@ func (p *Provider) FetchUser(session goth.Session) (goth.User, error) {
 		return user, err
 	}
 
-	user.Name = user.RawData["name"].(string)
-	user.NickName = user.RawData["screen_name"].(string)
-	if user.RawData["email"] != nil {
-		user.Email = user.RawData["email"].(string)
-	}
-	user.Description = user.RawData["description"].(string)
-	user.AvatarURL = user.RawData["profile_image_url"].(string)
-	user.UserID = user.RawData["id_str"].(string)
-	user.Location = user.RawData["location"].(string)
+	user.Name = toString(user.RawData["name"])
+	user.NickName = toString(user.RawData["screen_name"])
+	user.Email = toString(user.RawData["email"])
+	user.Description = toString(user.RawData["description"])
+	user.AvatarURL = toString(user.RawData["profile_image_url"])
+	user.UserID = toString(user.RawData["id_str"])
+	user.Location = toString(user.RawData["location"])
 	user.AccessToken = sess.AccessToken.Token
 	user.AccessTokenSecret = sess.AccessToken.Secret
 	return user, err
@@ -161,4 +159,13 @@ func (p *Provider) RefreshToken(refreshToken string) (*oauth2.Token, error) {
 //RefreshTokenAvailable refresh token is not provided by twitter
 func (p *Provider) RefreshTokenAvailable() bool {
 	return false
+}
+
+//toString safely converts any to string. An empty string is returned
+//if v cannot be coerced to string.
+func toString(v interface{}) string {
+	if s, ok := v.(string); ok {
+		return s
+	}
+	return ""
 }
