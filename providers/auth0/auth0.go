@@ -8,13 +8,14 @@ import (
 	"io"
 	"net/http"
 
+	"fmt"
+
 	"github.com/markbates/goth"
 	"golang.org/x/oauth2"
-	"fmt"
 )
 
 const (
-	authEndpoint    string = "/oauth/authorize"
+	authEndpoint    string = "/authorize"
 	tokenEndpoint   string = "/oauth/token"
 	endpointProfile string = "/userinfo"
 	protocol        string = "https://"
@@ -35,7 +36,7 @@ type auth0UserResp struct {
 	Name      string `json:"name"`
 	NickName  string `json:"nickname"`
 	Email     string `json:"email"`
-	UserID    string `json:"user_id"`
+	UserID    string `json:"sub"`
 	AvatarURL string `json:"picture"`
 }
 
@@ -44,11 +45,11 @@ type auth0UserResp struct {
 // create one manually.
 func New(clientKey, secret, callbackURL string, auth0Domain string, scopes ...string) *Provider {
 	p := &Provider{
-		ClientKey:           clientKey,
-		Secret:              secret,
-		CallbackURL:         callbackURL,
-		Domain:              auth0Domain,
-		providerName:        "auth0",
+		ClientKey:    clientKey,
+		Secret:       secret,
+		CallbackURL:  callbackURL,
+		Domain:       auth0Domain,
+		providerName: "auth0",
 	}
 	p.config = newConfig(p, scopes)
 	return p

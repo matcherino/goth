@@ -11,9 +11,9 @@ import (
 	"net/http"
 	"net/url"
 
+	"fmt"
 	"github.com/markbates/goth"
 	"golang.org/x/oauth2"
-	"fmt"
 )
 
 var (
@@ -27,10 +27,10 @@ var (
 // one manually.
 func New(clientKey, secret, callbackURL string, scopes ...string) *Provider {
 	p := &Provider{
-		ClientKey:           clientKey,
-		Secret:              secret,
-		CallbackURL:         callbackURL,
-		providerName:        "instagram",
+		ClientKey:    clientKey,
+		Secret:       secret,
+		CallbackURL:  callbackURL,
+		providerName: "instagram",
 	}
 	p.config = newConfig(p, scopes)
 	return p
@@ -118,7 +118,7 @@ func userFromReader(reader io.Reader, user *goth.User) error {
 			ProfilePicture string `json:"profile_picture"`
 			Bio            string `json:"bio"`
 			Website        string `json:"website"`
-			Counts struct {
+			Counts         struct {
 				Media      int `json:"media"`
 				Follows    int `json:"follows"`
 				FollowedBy int `json:"followed_by"`
@@ -130,7 +130,7 @@ func userFromReader(reader io.Reader, user *goth.User) error {
 		return err
 	}
 	user.UserID = u.Data.ID
-	user.Name = u.Data.UserName
+	user.Name = u.Data.FullName
 	user.NickName = u.Data.UserName
 	user.AvatarURL = u.Data.ProfilePicture
 	user.Description = u.Data.Bio

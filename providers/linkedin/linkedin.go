@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"net/url"
 
+	"fmt"
 	"github.com/markbates/goth"
 	"golang.org/x/oauth2"
-	"fmt"
 )
 
 //more details about linkedin fields: https://developer.linkedin.com/documents/profile-fields
@@ -28,10 +28,10 @@ const (
 // one manually.
 func New(clientKey, secret, callbackURL string, scopes ...string) *Provider {
 	p := &Provider{
-		ClientKey:           clientKey,
-		Secret:              secret,
-		CallbackURL:         callbackURL,
-		providerName:        "linkedin",
+		ClientKey:    clientKey,
+		Secret:       secret,
+		CallbackURL:  callbackURL,
+		providerName: "linkedin",
 	}
 	p.config = newConfig(p, scopes)
 	return p
@@ -125,7 +125,7 @@ func userFromReader(reader io.Reader, user *goth.User) error {
 		LastName   string `json:"lastName"`
 		Headline   string `json:"headline"`
 		PictureURL string `json:"pictureUrl"`
-		Location struct {
+		Location   struct {
 			Name string `json:"name"`
 		} `json:"location"`
 	}{}
@@ -135,6 +135,8 @@ func userFromReader(reader io.Reader, user *goth.User) error {
 		return err
 	}
 
+	user.FirstName = u.FirstName
+	user.LastName = u.LastName
 	user.Name = u.FirstName + " " + u.LastName
 	user.NickName = u.FirstName
 	user.Email = u.Email

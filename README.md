@@ -18,6 +18,7 @@ $ go get github.com/markbates/goth
 
 * Amazon
 * Auth0
+* Azure AD
 * Battle.net
 * Bitbucket
 * Box
@@ -27,11 +28,13 @@ $ go get github.com/markbates/goth
 * Digital Ocean
 * Discord
 * Dropbox
+* Eve Online
 * Facebook
 * Fitbit
 * GitHub
 * Gitlab
-* Google+
+* Google
+* Google+ (deprecated)
 * Heroku
 * InfluxCloud
 * Instagram
@@ -39,6 +42,9 @@ $ go get github.com/markbates/goth
 * Lastfm
 * Linkedin
 * Meetup
+* MicrosoftOnline
+* Naver
+* Nextcloud
 * OneDrive
 * OpenID Connect (auto discovery)
 * Paypal
@@ -48,13 +54,17 @@ $ go get github.com/markbates/goth
 * Spotify
 * Steam
 * Stripe
+* Tumblr
 * Twitch
 * Twitter
+* Typetalk
 * Uber
+* VK
 * Wepay
 * Xero
 * Yahoo
 * Yammer
+* Yandex
 
 ## Examples
 
@@ -73,7 +83,7 @@ $ go get github.com/markbates/goth
 ```text
 $ cd goth/examples
 $ go get -v
-$ go build 
+$ go build
 $ ./examples
 ```
 
@@ -99,7 +109,7 @@ As configured, this default store (`gothic.Store`) will generate cookies with `O
 
 To tailor these fields for your application, you can override the `gothic.Store` variable at startup.
 
-The follow snippet show one way to do this:
+The following snippet shows one way to do this:
 
 ```go
 key := ""             // Replace with your SESSION_SECRET or similar
@@ -130,51 +140,3 @@ Would I love to see more providers? Certainly! Would you love to contribute one?
 4. Commit your changes (git commit -am 'Add some feature')
 5. Push to the branch (git push origin my-new-feature)
 6. Create new Pull Request
-
-## Contributors
-
-* Mark Bates
-* Tyler Bunnell
-* Corey McGrillis
-* willemvd
-* Rakesh Goyal
-* Andy Grunwald
-* Glenn Walker
-* Kevin Fitzpatrick
-* Ben Tranter
-* Sharad Ganapathy
-* Andrew Chilton
-* sharadgana
-* Aurorae
-* Craig P Jolicoeur
-* Zac Bergquist
-* Geoff Franks
-* Raphael Geronimi
-* Noah Shibley
-* lumost
-* oov
-* Felix Lamouroux
-* Rafael Quintela
-* Tyler
-* DenSm
-* Samy KACIMI
-* dante gray
-* Noah
-* Jacob Walker
-* Marin Martinic
-* Roy
-* Omni Adams
-* Sasa Brankovic
-* dkhamsing
-* Dante Swift
-* Attila Domokos
-* Albin Gilles
-* Syed Zubairuddin
-* Johnny Boursiquot
-* Jerome Touffe-Blin
-* bryanl
-* Masanobu YOSHIOKA
-* Jonathan Hall
-* HaiMing.Yin
-* Sairam Kunala
-* Regan Ashworth

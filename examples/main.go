@@ -9,14 +9,13 @@ import (
 	"sort"
 
 	"log"
-	"math"
 
 	"github.com/gorilla/pat"
-	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/amazon"
 	"github.com/markbates/goth/providers/auth0"
+	"github.com/markbates/goth/providers/azuread"
 	"github.com/markbates/goth/providers/battlenet"
 	"github.com/markbates/goth/providers/bitbucket"
 	"github.com/markbates/goth/providers/box"
@@ -25,10 +24,12 @@ import (
 	"github.com/markbates/goth/providers/digitalocean"
 	"github.com/markbates/goth/providers/discord"
 	"github.com/markbates/goth/providers/dropbox"
+	"github.com/markbates/goth/providers/eveonline"
 	"github.com/markbates/goth/providers/facebook"
 	"github.com/markbates/goth/providers/fitbit"
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/gitlab"
+	"github.com/markbates/goth/providers/google"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/heroku"
 	"github.com/markbates/goth/providers/instagram"
@@ -36,6 +37,9 @@ import (
 	"github.com/markbates/goth/providers/lastfm"
 	"github.com/markbates/goth/providers/linkedin"
 	"github.com/markbates/goth/providers/meetup"
+	"github.com/markbates/goth/providers/microsoftonline"
+	"github.com/markbates/goth/providers/naver"
+	"github.com/markbates/goth/providers/nextcloud"
 	"github.com/markbates/goth/providers/onedrive"
 	"github.com/markbates/goth/providers/openidConnect"
 	"github.com/markbates/goth/providers/paypal"
@@ -47,25 +51,15 @@ import (
 	"github.com/markbates/goth/providers/stripe"
 	"github.com/markbates/goth/providers/twitch"
 	"github.com/markbates/goth/providers/twitter"
+	"github.com/markbates/goth/providers/typetalk"
 	"github.com/markbates/goth/providers/uber"
+	"github.com/markbates/goth/providers/vk"
 	"github.com/markbates/goth/providers/wepay"
 	"github.com/markbates/goth/providers/xero"
 	"github.com/markbates/goth/providers/yahoo"
 	"github.com/markbates/goth/providers/yammer"
+	"github.com/markbates/goth/providers/yandex"
 )
-
-func init() {
-	store := sessions.NewFilesystemStore(os.TempDir(), []byte("goth-example"))
-
-	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
-	// securecookie: the value is too long
-	// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
-
-	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-	store.MaxLength(math.MaxInt64)
-
-	gothic.Store = store
-}
 
 func main() {
 	goth.UseProviders(
@@ -75,6 +69,7 @@ func main() {
 
 		facebook.New(os.Getenv("FACEBOOK_KEY"), os.Getenv("FACEBOOK_SECRET"), "http://localhost:3000/auth/facebook/callback"),
 		fitbit.New(os.Getenv("FITBIT_KEY"), os.Getenv("FITBIT_SECRET"), "http://localhost:3000/auth/fitbit/callback"),
+		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), "http://localhost:3000/auth/google/callback"),
 		gplus.New(os.Getenv("GPLUS_KEY"), os.Getenv("GPLUS_SECRET"), "http://localhost:3000/auth/gplus/callback"),
 		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), "http://localhost:3000/auth/github/callback"),
 		spotify.New(os.Getenv("SPOTIFY_KEY"), os.Getenv("SPOTIFY_SECRET"), "http://localhost:3000/auth/spotify/callback"),
@@ -91,11 +86,15 @@ func main() {
 		amazon.New(os.Getenv("AMAZON_KEY"), os.Getenv("AMAZON_SECRET"), "http://localhost:3000/auth/amazon/callback"),
 		yammer.New(os.Getenv("YAMMER_KEY"), os.Getenv("YAMMER_SECRET"), "http://localhost:3000/auth/yammer/callback"),
 		onedrive.New(os.Getenv("ONEDRIVE_KEY"), os.Getenv("ONEDRIVE_SECRET"), "http://localhost:3000/auth/onedrive/callback"),
+		azuread.New(os.Getenv("AZUREAD_KEY"), os.Getenv("AZUREAD_SECRET"), "http://localhost:3000/auth/azuread/callback", nil),
+		microsoftonline.New(os.Getenv("MICROSOFTONLINE_KEY"), os.Getenv("MICROSOFTONLINE_SECRET"), "http://localhost:3000/auth/microsoftonline/callback"),
 		battlenet.New(os.Getenv("BATTLENET_KEY"), os.Getenv("BATTLENET_SECRET"), "http://localhost:3000/auth/battlenet/callback"),
+		eveonline.New(os.Getenv("EVEONLINE_KEY"), os.Getenv("EVEONLINE_SECRET"), "http://localhost:3000/auth/eveonline/callback"),
 
 		//Pointed localhost.com to http://localhost:3000/auth/yahoo/callback through proxy as yahoo
 		// does not allow to put custom ports in redirection uri
 		yahoo.New(os.Getenv("YAHOO_KEY"), os.Getenv("YAHOO_SECRET"), "http://localhost.com"),
+		typetalk.New(os.Getenv("TYPETALK_KEY"), os.Getenv("TYPETALK_SECRET"), "http://localhost:3000/auth/typetalk/callback", "my"),
 		slack.New(os.Getenv("SLACK_KEY"), os.Getenv("SLACK_SECRET"), "http://localhost:3000/auth/slack/callback"),
 		stripe.New(os.Getenv("STRIPE_KEY"), os.Getenv("STRIPE_SECRET"), "http://localhost:3000/auth/stripe/callback"),
 		wepay.New(os.Getenv("WEPAY_KEY"), os.Getenv("WEPAY_SECRET"), "http://localhost:3000/auth/wepay/callback", "view_user"),
@@ -115,6 +114,11 @@ func main() {
 		//Auth0 allocates domain per customer, a domain must be provided for auth0 to work
 		auth0.New(os.Getenv("AUTH0_KEY"), os.Getenv("AUTH0_SECRET"), "http://localhost:3000/auth/auth0/callback", os.Getenv("AUTH0_DOMAIN")),
 		xero.New(os.Getenv("XERO_KEY"), os.Getenv("XERO_SECRET"), "http://localhost:3000/auth/xero/callback"),
+		vk.New(os.Getenv("VK_KEY"), os.Getenv("VK_SECRET"), "http://localhost:3000/auth/vk/callback"),
+		naver.New(os.Getenv("NAVER_KEY"), os.Getenv("NAVER_SECRET"), "http://localhost:3000/auth/naver/callback"),
+		vk.New(os.Getenv("VK_KEY"), os.Getenv("VK_SECRET"), "http://localhost:3000/auth/vk/callback"),
+		yandex.New(os.Getenv("YANDEX_KEY"), os.Getenv("YANDEX_SECRET"), "http://localhost:3000/auth/yandex/callback"),
+		nextcloud.NewCustomisedDNS(os.Getenv("NEXTCLOUD_KEY"), os.Getenv("NEXTCLOUD_SECRET"), "http://localhost:3000/auth/nextcloud/callback", os.Getenv("NEXTCLOUD_URL")),
 	)
 
 	// OpenID Connect is based on OpenID Connect Auto Discovery URL (https://openid.net/specs/openid-connect-discovery-1_0-17.html)
@@ -134,10 +138,13 @@ func main() {
 	m["digitalocean"] = "Digital Ocean"
 	m["discord"] = "Discord"
 	m["dropbox"] = "Dropbox"
+	m["eveonline"] = "Eve Online"
 	m["facebook"] = "Facebook"
 	m["fitbit"] = "Fitbit"
 	m["github"] = "Github"
 	m["gitlab"] = "Gitlab"
+	m["google"] = "Google"
+	m["gplus"] = "Google Plus"
 	m["soundcloud"] = "SoundCloud"
 	m["spotify"] = "Spotify"
 	m["steam"] = "Steam"
@@ -147,22 +154,28 @@ func main() {
 	m["wepay"] = "Wepay"
 	m["yahoo"] = "Yahoo"
 	m["yammer"] = "Yammer"
-	m["gplus"] = "Google Plus"
 	m["heroku"] = "Heroku"
 	m["instagram"] = "Instagram"
 	m["intercom"] = "Intercom"
 	m["lastfm"] = "Last FM"
 	m["linkedin"] = "Linkedin"
 	m["onedrive"] = "Onedrive"
+	m["azuread"] = "Azure AD"
+	m["microsoftonline"] = "Microsoft Online"
 	m["battlenet"] = "Battlenet"
 	m["paypal"] = "Paypal"
 	m["twitter"] = "Twitter"
 	m["salesforce"] = "Salesforce"
+	m["typetalk"] = "Typetalk"
 	m["slack"] = "Slack"
 	m["meetup"] = "Meetup.com"
 	m["auth0"] = "Auth0"
 	m["openid-connect"] = "OpenID Connect"
 	m["xero"] = "Xero"
+	m["vk"] = "VK"
+	m["naver"] = "Naver"
+	m["yandex"] = "Yandex"
+	m["nextcloud"] = "NextCloud"
 
 	var keys []string
 	for k := range m {
